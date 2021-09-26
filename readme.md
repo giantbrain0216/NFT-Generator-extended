@@ -58,11 +58,11 @@ Or double click './dist/app.exe' for Windows 10.
    *It aims to provide a fast base64 implementation for base64 encoding/decoding.*
 
    ​	`pip install pybase64`
+
+   
    
 6.   Pandas
 
    *pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the [Python](https://www.python.org/) programming language.*
 
-    ​	`pip install pandas`
-
-    
+   ​	`pip install pandas`
