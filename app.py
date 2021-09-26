@@ -1,0 +1,316 @@
+import eel
+import wx
+import os
+import json
+from PIL import Image, ImageDraw, ImageFont
+import random
+import shutil
+import base64
+import pandas as pd
+
+eel.init('web')
+
+excel = None
+bg = None
+
+# system1
+
+
+@eel.expose
+def browse(option):
+    app = wx.App(None)
+    defaultPath = os.getcwd()
+
+    if option == 'system1_folder':
+        path = ''
+        dlg1 = wx.DirDialog(
+            None,
+            message='Choose folder',
+            defaultPath=defaultPath,
+            style=wx.STAY_ON_TOP)
+        # Show the dialog and retrieve the user response.
+        if dlg1.ShowModal() == wx.ID_OK:
+            # load directory
+            path = dlg1.GetPath()
+        else:
+            path = ''
+        # Destroy the dialog.
+        dlg1.Destroy()
+        if path != '':
+            return loadResource(path)
+        return "path_error!"
+    elif option == 'system2_excel':
+        path = ''
+        dlg2 = wx.FileDialog(
+            None,
+            'Choose excel file',
+            defaultDir=defaultPath,
+            wildcard="Excel File |*.xls;*.xlsx;",
+            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.STAY_ON_TOP
+        )
+        try:
+            if dlg2.ShowModal() == wx.ID_CANCEL:
+                return None
+            path = dlg2.GetPath()
+            if path != '':
+                return loadExcelFile(path)
+            return 'path_error'
+        finally:
+            dlg2.Destroy()
+    elif option == 'system2_bg':
+        path = ''
+        dlg2 = wx.FileDialog(
+            None,
+            'Choose image file',
+            defaultDir=defaultPath,
+            wildcard="PNG File |*.png",
+            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.STAY_ON_TOP
+        )
+        try:
+            if dlg2.ShowModal() == wx.ID_CANCEL:
+                return None
+            path = dlg2.GetPath()
+            if path != '':
+                return loadBgFile(path)
+            return 'path_error'
+        finally:
+            dlg2.Destroy()
+
+
+def loadResource(path):
+    resList = []
+    entries = os.scandir(path)
+    i: int = 0
+    for entry in entries:
+        if(entry.is_dir()):
+            resList += [{'id': entry.name, 'parent': "#",
+                         'text': entry.name, 'icon': "jstree-folder"}]
+            entry2 = os.scandir(entry.path)
+            for entry3 in entry2:
+                i = int(i) + 1
+                index = entry3.name.find('.png')
+                resList += [{'id': entry3.name[:index] + str(
+                    i) + entry3.name[index:], 'parent': entry.name, 'text': entry3.name, 'icon': "jstree-file", 'path': entry3.path}]
+    return json.dumps(resList)
+
+
+@eel.expose
+def combineImages(data):
+    d = json.loads(data)
+    result = generateImages(d)
+    return result
+
+
+def generateImages(d):
+    all_images = []
+    number = int(d['number'])
+    projectName = d['projectName']
+    uploadURL = d['uploadURL']
+
+    if(os.path.isdir('results') != True):
+        os.makedirs('results')
+    else:
+        shutil.rmtree('results')
+        os.makedirs('results')
+
+    if(os.path.isdir('metadata') != True):
+        os.makedirs('metadata')
+    else:
+        shutil.rmtree('metadata')
+        os.makedirs('metadata')
+
+    for it in range(number):
+        new_image = {}
+        preparedData = prepareData(d)
+        img = 'EMPTY'
+
+        for i in range(len(preparedData)):
+            if(i == 0):
+                img = Image.alpha_composite(Image.open(preparedData[i]['path']).convert(
+                    'RGBA'), Image.open(preparedData[i+1]['path']).convert('RGBA'))
+            else:
+                if(i < (len(preparedData)-1)):
+                    img = Image.alpha_composite(img, Image.open(
+                        preparedData[i+1]['path']).convert('RGBA'))
+
+            new_image[preparedData[i]['parent'].replace(preparedData[i]['parent'].split('_')[0] + '_', '')] = preparedData[i]['path'].split(
+                '\\')[-1].replace('.png', '').replace(preparedData[i]['path'], '')
+
+        new_image['tokenId'] = str(it)
+        rgbImg = img.convert('RGB')
+        all_images.append(new_image)
+
+        rgbImg.save("./results/" + new_image['tokenId'] + ".png")
+
+    METADATA_FILE_NAME = 'all-traits.json'
+    with open('./metadata/' + METADATA_FILE_NAME, 'w') as outfile:
+        json.dump(all_images, outfile, indent=4)
+
+    f = open('./metadata/all-traits.json')
+    allTraits = json.load(f)
+    for i in allTraits:
+        tokenId = i['tokenId']
+        token = {
+            "image": uploadURL + '/' + tokenId + ".png",
+            "tokenId": tokenId,
+            "name": projectName + ' ' + str(tokenId),
+            "attributes": []
+        }
+        for key in i.keys():
+            token['attributes'].append(getAttribute(key, i[key]))
+
+        with open('./metadata/' + tokenId, 'w') as outfile:
+            json.dump(token, outfile, indent=4)
+
+    return 'success'
+
+
+def getAttribute(key, value):
+    return {
+        "trait_type": key,
+        "value": value
+    }
+
+
+def prepareData(data):
+    datums = []
+    for i in data["unwantImages"]:
+        if(i["group"] != '#'):
+            stop = len(i["children"]) - 1
+            start = 0
+            randIndex = random.randint(start, stop)
+            datums.append({'parent': i["children"][randIndex]["original"]
+                          ["parent"], 'path': i["children"][randIndex]["original"]["path"]})
+
+    for i in data["importantImages"]:
+        if(i["group"] != '#'):
+            datums.append({'parent': i["children"][0]["original"]
+                          ["parent"], 'path': i["children"][0]["original"]["path"]})
+    unique = {each['parent']: each for each in datums}.values()
+    result = json.loads(json.dumps(list(unique)))
+    result.sort(key=lambda x: x["parent"])
+    return result
+
+
+@eel.expose
+def getImgSrc(path):
+    f = open(path, 'rb')
+    data = f.read()
+    data = base64.b64encode(data).decode("utf-8")
+    return data
+
+# system2
+
+
+def loadExcelFile(path):
+    global excel
+    excel = {
+        'superPowers': {
+            'SUPERPOWERS': [],
+            'RARITY': []
+        },
+        'gifts': {
+            'GIFTS': [],
+            'RARITY': []
+        },
+        'skills': {
+            'SKILLS': [],
+            'RARITY': []
+        }
+    }
+
+    data1 = pd.read_excel(path, header=1, usecols="A,C", na_filter=False)
+    data2 = pd.read_excel(path, header=1, usecols="E,G", na_filter=False)
+    data3 = pd.read_excel(path, header=1, usecols="I,K", na_filter=False)
+
+    for i in data1['SUPERPOWERS']:
+        if i != '':
+            excel['superPowers']['SUPERPOWERS'].append(i)
+    for j in data1['RARITY']:
+        if j != '':
+            excel['superPowers']['RARITY'].append(j)
+
+    for k in data2['GIFTS']:
+        if k != '':
+            excel['gifts']['GIFTS'].append(k)
+    for l in data2['RARITY.1']:
+        if l != '':
+            excel['gifts']['RARITY'].append(l)
+
+    for m in data3['SKILLS']:
+        if m != '':
+            excel['skills']['SKILLS'].append(m)
+    for n in data3['RARITY.2']:
+        if n != '':
+            excel['skills']['RARITY'].append(n)
+
+    return 'success'
+
+
+def loadBgFile(path):
+    global bg
+    bg = Image.open(path)
+    return 'success'
+
+# superpowers -> [20,139], [20, 186], gifts -> [20, 351], [20, 402], [20, 452], skills -> [20, 585], [20, 635], [20, 685], [20, 735], [20, 785]
+# superpowers -> [20,140], [20, 190], gifts -> [20, 350], [20, 400], [20, 450], skills -> [20, 590], [20, 640], [20, 690], [20, 740], [20, 790]
+# superpowers -> [20,117], [20, 167], gifts -> [20, 327], [20, 377], [20, 427], skills -> [20, 567], [20, 617], [20, 667], [20, 717], [20, 767]
+@eel.expose
+def combineImages2(amount):
+    if(os.path.isdir('results') != True):
+        os.makedirs('results')
+    else:
+        shutil.rmtree('results')
+        os.makedirs('results')
+
+    if(os.path.isdir('txts') != True):
+        os.makedirs('txts')
+    else:
+        shutil.rmtree('txts')
+        os.makedirs('txts')
+    
+    font = ImageFont.truetype(r'C:\Windows\Fonts\javatext.ttf', 42)
+    color = 'black'
+    txtPosition = [(20, 117), (20, 167), (20, 327), (20, 377), (20, 427), (20, 567), (20, 617), (20, 667), (20, 717), (20, 767)]
+    
+    for j in range(int(amount)):
+        txt = open('./txts/' + str(j) + ".txt", "x")
+        txt.write('Rarity\n')
+        img = bg.copy()
+        d = ImageDraw.Draw(img)
+        totalRarity = 0
+        for i in range(len(txtPosition)):
+            if i < 2:
+                randIndex = random.randint(0, len(excel['superPowers']['SUPERPOWERS']) - 1)
+                word = excel['superPowers']['SUPERPOWERS'][randIndex]
+                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                if i == 0:
+                    txt.write('\nSuperpowers\n')
+                txt.write('-' + word + ' = ' + str(excel['superPowers']['RARITY'][randIndex]))
+                txt.write('\n')
+                totalRarity += excel['superPowers']['RARITY'][randIndex]
+            if 1 < i < 5:
+                randIndex = random.randint(0, len(excel['gifts']['GIFTS']) -1)
+                word = excel['gifts']['GIFTS'][randIndex]
+                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                if i == 2:
+                    txt.write('\nGifts\n')
+                txt.write('-' + word + ' = ' + str(excel['gifts']['RARITY'][randIndex]))
+                txt.write('\n')
+                totalRarity += excel['gifts']['RARITY'][randIndex]
+            if i > 4:
+                randIndex = random.randint(0, len(excel['gifts']['GIFTS']) - 1)
+                word = excel['skills']['SKILLS'][randIndex]
+                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                if i == 5:
+                  txt.write('\nSkills\n')
+                txt.write('-' + word + ' = ' + str(excel['skills']['RARITY'][randIndex]))
+                txt.write('\n')
+                totalRarity += excel['skills']['RARITY'][randIndex]
+        img.save('./results/' + str(j) + '.png')
+        txt.write('\n\n')
+        txt.write('Total rarity = ' + str(totalRarity/10))
+    return 'success'
+
+
+eel.start('index.html', port=0)

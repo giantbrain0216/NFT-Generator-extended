@@ -1,0 +1,12 @@
+.previewImage{
+    width: 100%;
+}
+
+#previewRes, #previewRes2{
+    background-color: darkolivegreen;
+}
+
+.progress-bar-animated {
+    -webkit-animation: progress-bar-stripes 0.3s linear infinite;
+    animation: progress-bar-stripes 0.3s linear infinite;
+}
