@@ -323,6 +323,9 @@ def combineImages2(amount):
 
 # system 3
 
+@eel.expose
+def gernerateFractal(data):
+    pass
 
 
 eel.start('index.html', port=0)
