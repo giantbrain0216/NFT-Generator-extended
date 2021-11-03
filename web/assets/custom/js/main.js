@@ -200,7 +200,6 @@ $('#reset2').on('click', () => {
 // system3
 $(document).ready(() => {
 
-
     $('input[name="modeSwitch"]').change((e) => {
         let val = e.target.defaultValue;
         let autoOptions = `<div class="col-4"></div><div class="col-4">
@@ -453,7 +452,6 @@ $(document).ready(() => {
                                 </div>
                             </div>`;
         if (val == 'semi') {
-            console.log($('#optionPanel7'));
             $('#optionPanel7').html(semiOptions);
         }
         else if (val == 'auto') {
@@ -463,6 +461,80 @@ $(document).ready(() => {
             $('#optionPanel7').html(rangeOptions);
         }
     });
+
+    $('#generate3').on('click', () => {
+        mode = $('input[name="modeSwitch"]').filter(':checked').val();
+        if (mode == 'auto') {
+            let data = {
+                mode: 'auto',
+                repeatNum: $('#repeatNum3').val(),
+                maxiter: $('#maxiter'),
+            };
+            if (data.maxiter != '') {
+                eel.generateFractal(data)(r => {
+
+                });
+            }
+            else {
+                alert('Missing at least one parameter!');
+            }
+        }
+        else if (mode == 'semi') {
+            let data = {
+                mode: 'semi',
+                repeatNum: $('#repeatNum3').val(),
+                color: {
+                    r: $('#color-R').val(),
+                    g: $('#color-G').val(),
+                    b: $('#color-B').val(),
+                },
+                coord: {
+                    x1: $('#x1').val(),
+                    x2: $('#x2').val(),
+                    y1: $('#y1').val(),
+                    y2: $('#y2').val(),
+                },
+                maxiter: $('#maxiter').val(),
+                stripeS: $('#stripeS').val(),
+                ncycle: $('#ncycle').val(),
+                stepS: $('#stepS').val(),
+            };
+            if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
+                alert('Missing at least one parameter!');
+            }
+            eel.generateFractal(JSON.stringify(data))(r => {
+
+            });
+        }
+        else if (mode == 'range') {
+            let data = {
+                mode: 'semi',
+                repeatNum: $('#repeatNum3').val(),
+                color: {
+                    r: $('#color-R').val(),
+                    g: $('#color-G').val(),
+                    b: $('#color-B').val(),
+                },
+                coord: {
+                    x1: $('#x1').val(),
+                    x2: $('#x2').val(),
+                    y1: $('#y1').val(),
+                    y2: $('#y2').val(),
+                },
+                maxiter: $('#maxiter').val(),
+                stripeS: $('#stripeS').val(),
+                ncycle: $('#ncycle').val(),
+                stepS: $('#stepS').val(),
+            };
+            if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
+                alert('Missing at least one parameter!');
+            }
+            eel.generateFractal(JSON.stringify(data))(r => {
+
+            });
+        }
+    });
+
 });
 
 selectRange = () => {
