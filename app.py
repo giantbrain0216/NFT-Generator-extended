@@ -199,6 +199,7 @@ def getImgSrc(path):
     data = base64.b64encode(data).decode("utf-8")
     return data
 
+
 # system2
 
 
@@ -255,6 +256,8 @@ def loadBgFile(path):
 # superpowers -> [20,139], [20, 186], gifts -> [20, 351], [20, 402], [20, 452], skills -> [20, 585], [20, 635], [20, 685], [20, 735], [20, 785]
 # superpowers -> [20,140], [20, 190], gifts -> [20, 350], [20, 400], [20, 450], skills -> [20, 590], [20, 640], [20, 690], [20, 740], [20, 790]
 # superpowers -> [20,117], [20, 167], gifts -> [20, 327], [20, 377], [20, 427], skills -> [20, 567], [20, 617], [20, 667], [20, 717], [20, 767]
+
+
 @eel.expose
 def combineImages2(amount):
     if(os.path.isdir('results') != True):
@@ -268,11 +271,12 @@ def combineImages2(amount):
     else:
         shutil.rmtree('txts')
         os.makedirs('txts')
-    
+
     font = ImageFont.truetype(r'C:\Windows\Fonts\javatext.ttf', 42)
     color = 'black'
-    txtPosition = [(20, 117), (20, 167), (20, 327), (20, 377), (20, 427), (20, 567), (20, 617), (20, 667), (20, 717), (20, 767)]
-    
+    txtPosition = [(20, 117), (20, 167), (20, 327), (20, 377), (20, 427),
+                   (20, 567), (20, 617), (20, 667), (20, 717), (20, 767)]
+
     for j in range(int(amount)):
         txt = open('./txts/' + str(j) + ".txt", "x")
         txt.write('Rarity\n')
@@ -281,36 +285,44 @@ def combineImages2(amount):
         totalRarity = 0
         for i in range(len(txtPosition)):
             if i < 2:
-                randIndex = random.randint(0, len(excel['superPowers']['SUPERPOWERS']) - 1)
+                randIndex = random.randint(
+                    0, len(excel['superPowers']['SUPERPOWERS']) - 1)
                 word = excel['superPowers']['SUPERPOWERS'][randIndex]
-                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                d.text(xy=txtPosition[i], text=word, fill=color, font=font)
                 if i == 0:
                     txt.write('\nSuperpowers\n')
-                txt.write('-' + word + ' = ' + str(excel['superPowers']['RARITY'][randIndex]))
+                txt.write('-' + word + ' = ' +
+                          str(excel['superPowers']['RARITY'][randIndex]))
                 txt.write('\n')
                 totalRarity += excel['superPowers']['RARITY'][randIndex]
             if 1 < i < 5:
-                randIndex = random.randint(0, len(excel['gifts']['GIFTS']) -1)
+                randIndex = random.randint(0, len(excel['gifts']['GIFTS']) - 1)
                 word = excel['gifts']['GIFTS'][randIndex]
-                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                d.text(xy=txtPosition[i], text=word, fill=color, font=font)
                 if i == 2:
                     txt.write('\nGifts\n')
-                txt.write('-' + word + ' = ' + str(excel['gifts']['RARITY'][randIndex]))
+                txt.write('-' + word + ' = ' +
+                          str(excel['gifts']['RARITY'][randIndex]))
                 txt.write('\n')
                 totalRarity += excel['gifts']['RARITY'][randIndex]
             if i > 4:
                 randIndex = random.randint(0, len(excel['gifts']['GIFTS']) - 1)
                 word = excel['skills']['SKILLS'][randIndex]
-                d.text(xy = txtPosition[i], text = word, fill = color, font = font)
+                d.text(xy=txtPosition[i], text=word, fill=color, font=font)
                 if i == 5:
-                  txt.write('\nSkills\n')
-                txt.write('-' + word + ' = ' + str(excel['skills']['RARITY'][randIndex]))
+                    txt.write('\nSkills\n')
+                txt.write('-' + word + ' = ' +
+                          str(excel['skills']['RARITY'][randIndex]))
                 txt.write('\n')
                 totalRarity += excel['skills']['RARITY'][randIndex]
         img.save('./results/' + str(j) + '.png')
         txt.write('\n\n')
         txt.write('Total rarity = ' + str(totalRarity/10))
     return 'success'
+
+
+# system 3
+
 
 
 eel.start('index.html', port=0)
