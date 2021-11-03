@@ -214,7 +214,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='maxiter' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="50" value="500">
+                                                min="100" value="500" step="50">
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +267,7 @@ $(document).ready(() => {
                                                 <span class="input-group-text">x1</span>
                                             </div>
                                             <input id='x1' type="number" class="form-control"
-                                                oninput="javascript: if (this.value > this.max) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+                                                oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
                                                 min="-2" max="1">
                                         </div>
                                         <div class="input-group mb-3">
@@ -275,7 +275,7 @@ $(document).ready(() => {
                                                 <span class="input-group-text">x2</span>
                                             </div>
                                             <input id='x2' type="number" class="form-control"
-                                                oninput="javascript: if (this.value > this.max) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+                                                oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
                                                 min="-2" max="1">
                                         </div>
                                         <div class="input-group mb-3">
@@ -283,7 +283,7 @@ $(document).ready(() => {
                                                 <span class="input-group-text">y1</span>
                                             </div>
                                             <input id='y1' type="number" class="form-control"
-                                                oninput="javascript: if (this.value > this.max) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+                                                oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
                                                 min="-1" max="1">
                                         </div>
                                         <div class="input-group mb-3">
@@ -307,14 +307,14 @@ $(document).ready(() => {
                                             </div>
                                             <input id='maxiter' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="50" value="500">
+                                                min="100" value="500" step="50">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">StripeS</span>
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
-                                                oninput="javascript: if (this.value > this.max) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+                                                oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
                                                 min="0" max="10" step="1" value="0">
                                         </div>
                                         <div class="input-group mb-3">
@@ -384,14 +384,14 @@ $(document).ready(() => {
                                             </div>
                                             <input id='maxiter' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="50" value="500">
+                                                min="100" value="500" step="50">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">StripeS</span>
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
-                                                oninput="javascript: if (this.value > this.max) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
+                                                oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
                                                 min="0" max="10" step="1" value="0">
                                         </div>
                                         <div class="input-group mb-3">
@@ -468,11 +468,11 @@ $(document).ready(() => {
             let data = {
                 mode: 'auto',
                 repeatNum: $('#repeatNum3').val(),
-                maxiter: $('#maxiter'),
+                maxiter: $('#maxiter').val(),
             };
             if (data.maxiter != '') {
-                eel.generateFractal(data)(r => {
-
+                eel.generateFractal(JSON.stringify(data))(r => {
+                    console.log(r);
                 });
             }
             else {
@@ -501,10 +501,11 @@ $(document).ready(() => {
             };
             if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
                 alert('Missing at least one parameter!');
-            }
-            eel.generateFractal(JSON.stringify(data))(r => {
+            } else {
+                eel.generateFractal(JSON.stringify(data))(r => {
 
-            });
+                });
+            }
         }
         else if (mode == 'range') {
             let data = {
@@ -528,10 +529,11 @@ $(document).ready(() => {
             };
             if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
                 alert('Missing at least one parameter!');
-            }
-            eel.generateFractal(JSON.stringify(data))(r => {
+            } else {
+                eel.generateFractal(JSON.stringify(data))(r => {
 
-            });
+                });
+            }
         }
     });
 

@@ -7,6 +7,11 @@ import random
 import shutil
 import base64
 import pandas as pd
+from mandelbrot import Mandelbrot
+import joblib
+from joblib import Parallel, delayed
+
+number_of_cpu = joblib.cpu_count()
 
 eel.init('web')
 
@@ -324,8 +329,37 @@ def combineImages2(amount):
 # system 3
 
 @eel.expose
-def gernerateFractal(data):
-    pass
+def generateFractal(data):
+    datums = json.loads(data)
+    if datums['mode'] == 'auto':
+        # Parallel(n_jobs=number_of_cpu)(delayed(drawFractal)(i, datums)
+        #                                for i in range(int(datums['repeatNum'])))
+        for i in range(int(datums['repeatNum'])):
+            drawFractal(i, datums)
+        return 'success'
+
+
+def drawFractal(value, datums):
+    if(datums['mode'] == 'auto'):
+        xmin = -2
+        xmax = 1
+        ymin = -1
+        ymax = 1
+        x1 = random.uniform(xmin, xmax)
+        x2 = random.uniform(xmin, xmax)
+        y1 = random.uniform(ymin, ymax)
+        y2 = (9 / 16) * (x2 - x1) + y1
+        r = round(random.uniform(0, 1), 2)
+        g = round(random.uniform(0, 1), 2)
+        b = round(random.uniform(0, 1), 2)
+        maxiter = int(datums['maxiter'])
+        stripe_s = random.randint(0, 10)
+        ncycle = random.randint(1, 64)
+        step_s = random.randint(0, 10)
+
+        # print(maxiter, coord, rgb_thetas, step_s, ncycle, stripe_s)
+        mand = Mandelbrot(maxiter = maxiter, coord = [x1, x2, y1, y2], rgb_thetas = [r, g, b], stripe_s = stripe_s, ncycle = ncycle, step_s = step_s)
+        mand.draw(str(value) + '.png')
 
 
 eel.start('index.html', port=0)
