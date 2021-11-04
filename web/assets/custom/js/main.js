@@ -268,7 +268,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='x1' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="-2" max="1">
+                                                min="-2" max="1" onchange="calY2()" onkeyup="calY2()">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -276,7 +276,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='x2' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="-2" max="1">
+                                                min="-2" max="1" onchange="calY2()" onkeyup="calY2()">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -284,7 +284,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='y1' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="-1" max="1">
+                                                min="-1" max="1" onchange="calY2()" onkeyup="calY2()">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -315,7 +315,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" max="10" step="1" value="0">
+                                                min="0" max="10" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -323,7 +323,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='ncycle' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="1" step="1" value="32">
+                                                min="1" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -331,7 +331,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stepS' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" value="0">
+                                                min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -392,7 +392,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" max="10" step="1" value="0">
+                                                min="0" max="10" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -400,7 +400,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='ncycle' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="1" step="1" value="32">
+                                                min="1" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -408,7 +408,7 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stepS' type="number" class="form-control"
                                                 oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" value="0">
+                                                min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -463,6 +463,9 @@ $(document).ready(() => {
     });
 
     $('#generate3').on('click', () => {
+        $('#generate3').prop('disabled', true);
+        $('#optionPanel9 .progress-bar').addClass('progress-bar-animated');
+        $('#reset3').prop('disabled', true);
         mode = $('input[name="modeSwitch"]').filter(':checked').val();
         if (mode == 'auto') {
             let data = {
@@ -472,7 +475,11 @@ $(document).ready(() => {
             };
             if (data.maxiter != '') {
                 eel.generateFractal(JSON.stringify(data))(r => {
-                    console.log(r);
+                    if(r == 'success') {
+                        $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
+                        $('#reset3').prop('disabled', false);
+                        $('#generate3').prop('disabled', false);
+                    }
                 });
             }
             else {
@@ -499,17 +506,22 @@ $(document).ready(() => {
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
             };
-            if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
-                alert('Missing at least one parameter!');
+            // if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '') {
+                alert('Missing at coordinate or iterations parameter');
             } else {
                 eel.generateFractal(JSON.stringify(data))(r => {
-
+                    if(r == 'success') {
+                        $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
+                        $('#reset3').prop('disabled', false);
+                        $('#generate3').prop('disabled', false);
+                    }
                 });
             }
         }
         else if (mode == 'range') {
             let data = {
-                mode: 'semi',
+                mode: 'range',
                 repeatNum: $('#repeatNum3').val(),
                 color: {
                     r: $('#color-R').val(),
@@ -527,11 +539,15 @@ $(document).ready(() => {
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
             };
-            if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
-                alert('Missing at least one parameter!');
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '') {
+                alert('Missing at coordinate or iterations parameter');
             } else {
                 eel.generateFractal(JSON.stringify(data))(r => {
-
+                    if(r == 'success') {
+                        $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
+                        $('#reset3').prop('disabled', false);
+                        $('#generate3').prop('disabled', false);
+                    }
                 });
             }
         }
@@ -540,6 +556,22 @@ $(document).ready(() => {
 });
 
 selectRange = () => {
+    eel.getRange()(r => {
+        $('#x1').val(JSON.parse(r)[0]);
+        $('#x2').val(JSON.parse(r)[1]);
+        $('#y1').val(JSON.parse(r)[2]);
+        $('#y2').val(JSON.parse(r)[3]);
+    });
+}
 
+calY2 = () => {
+    x1 = $('#x1').val();
+    x2 = $('#x2').val();
+    y1 = $('#y1').val();
+    y2 = '';
+    if (x1 != '' && x2 != '' && y1 != '') {
+        y2 = ((9 / 16) * (Number(x2) - Number(x1)) + Number(y1)).toString();
+    }
+    $('#y2').val(y2);
 }
 

@@ -395,6 +395,7 @@ class Mandelbrot():
                 opacity [0,1], k_ambiant, k_diffuse, k_spectral, shininess
 
         """
+        self.range = []
         self.xpixels = xpixels
         self.maxiter = maxiter
         self.coord = coord
@@ -614,7 +615,7 @@ class Mandelbrot_explorer():
 
         # Button
         self.coord = Button(
-            plt.axes([0.8, 0.8, 0.01, 0.01]), 'Save Coordinate')
+            plt.axes([0.9, 0.9, 0.1, 0.1]), 'Save Coordinate')
         self.coord.on_clicked(self.save_coord)
 
         # Zoom events
@@ -628,7 +629,9 @@ class Mandelbrot_explorer():
         plt.show()
 
     def save_coord(self, val):
-        print(self.mand.coord)
+        # print(self.mand.coord)
+        self.mand.range = self.mand.coord
+        plt.close()
 
     def update_val(self, val):
         """Slider interactivity: update object values"""
