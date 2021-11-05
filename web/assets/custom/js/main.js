@@ -463,17 +463,23 @@ $(document).ready(() => {
     });
 
     $('#generate3').on('click', () => {
-        $('#generate3').prop('disabled', true);
-        $('#optionPanel9 .progress-bar').addClass('progress-bar-animated');
-        $('#reset3').prop('disabled', true);
         mode = $('input[name="modeSwitch"]').filter(':checked').val();
         if (mode == 'auto') {
             let data = {
                 mode: 'auto',
                 repeatNum: $('#repeatNum3').val(),
                 maxiter: $('#maxiter').val(),
+                uploadURL: $('#uploadURL2').val(),
+                projectName: $('#projectName2').val(),
             };
-            if (data.maxiter != '') {
+
+            if (data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+                alert('Missing at coordinate or rest parameter');
+            }
+            else {
+                $('#generate3').prop('disabled', true);
+                $('#optionPanel9 .progress-bar').addClass('progress-bar-animated');
+                $('#reset3').prop('disabled', true);
                 eel.generateFractal(JSON.stringify(data))(r => {
                     if(r == 'success') {
                         $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
@@ -481,9 +487,6 @@ $(document).ready(() => {
                         $('#generate3').prop('disabled', false);
                     }
                 });
-            }
-            else {
-                alert('Missing at least one parameter!');
             }
         }
         else if (mode == 'semi') {
@@ -505,11 +508,15 @@ $(document).ready(() => {
                 stripeS: $('#stripeS').val(),
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
+                uploadURL: $('#uploadURL2').val(),
+                projectName: $('#projectName2').val(),
             };
-            // if (data.color.r == '' || data.color.g == '' || data.color.b == '' || data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.stripeS == '' || data.ncycle == '' || data.stepS == '') {
-            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '') {
-                alert('Missing at coordinate or iterations parameter');
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+                alert('Missing at coordinate or rest parameter');
             } else {
+                $('#generate3').prop('disabled', true);
+                $('#optionPanel9 .progress-bar').addClass('progress-bar-animated');
+                $('#reset3').prop('disabled', true);
                 eel.generateFractal(JSON.stringify(data))(r => {
                     if(r == 'success') {
                         $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
@@ -538,10 +545,15 @@ $(document).ready(() => {
                 stripeS: $('#stripeS').val(),
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
+                uploadURL: $('#uploadURL2').val(),
+                projectName: $('#projectName2').val(),
             };
-            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '') {
-                alert('Missing at coordinate or iterations parameter');
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+                alert('Missing at coordinate or rest parameter');
             } else {
+                $('#generate3').prop('disabled', true);
+                $('#optionPanel9 .progress-bar').addClass('progress-bar-animated');
+                $('#reset3').prop('disabled', true);
                 eel.generateFractal(JSON.stringify(data))(r => {
                     if(r == 'success') {
                         $('#optionPanel9 .progress-bar').removeClass('progress-bar-animated');
@@ -553,6 +565,9 @@ $(document).ready(() => {
         }
     });
 
+    $('#reset3').on('click', () => {
+        document.location.reload();
+    });
 });
 
 selectRange = () => {
@@ -570,7 +585,7 @@ calY2 = () => {
     y1 = $('#y1').val();
     y2 = '';
     if (x1 != '' && x2 != '' && y1 != '') {
-        y2 = ((9 / 16) * (Number(x2) - Number(x1)) + Number(y1)).toString();
+        y2 = ((1 / 1) * (Number(x2) - Number(x1)) + Number(y1)).toString();
     }
     $('#y2').val(y2);
 }

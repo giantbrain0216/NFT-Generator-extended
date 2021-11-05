@@ -1,4 +1,6 @@
 /build
 /dist
 /__pycache__
+/metadata
+/results
 app.spec
