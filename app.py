@@ -423,7 +423,7 @@ def drawFractal(value, datums):
         x1 = random.uniform(x1, x2)
         x2 = random.uniform(x1, x2)
         y1 = random.uniform(y1, y2)
-        y2 = (9 / 16) * (x2 - x1) + y1
+        y2 = (1 / 1) * (x2 - x1) + y1
         r = round(random.uniform(0, 1), 2) if datums['color']['r'] == '' else float(
             datums['color']['r'])
         g = round(random.uniform(0, 1), 2) if datums['color']['g'] == '' else float(

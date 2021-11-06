@@ -315,23 +315,23 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" max="10" step="1">
+                                                min="0" max="32" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">NCycle</span>
                                             </div>
                                             <input id='ncycle' type="number" class="form-control"
-                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="1" step="1">
+                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min; if(Number(this.value) > Number(this.max)) this.value = this.max;"
+                                                min="1" step="1" max="200">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">StepS</span>
                                             </div>
                                             <input id='stepS' type="number" class="form-control"
-                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0">
+                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min; if(Number(this.value) > Number(this.max)) this.value = this.max;"
+                                                min="0" max="100" step="1">
                                         </div>
                                     </div>
                                 </div>
@@ -392,23 +392,23 @@ $(document).ready(() => {
                                             </div>
                                             <input id='stripeS' type="number" class="form-control"
                                                 oninput="javascript: if (Number(this.value) > Number(this.max)) this.value = this.max; if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0" max="10" step="1">
+                                                min="0" max="32" step="1">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">NCycle</span>
                                             </div>
                                             <input id='ncycle' type="number" class="form-control"
-                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="1" step="1">
+                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min; if(Number(this.value) > Number(this.max)) this.value = this.max;"
+                                                min="1" step="1" max="200">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">StepS</span>
                                             </div>
                                             <input id='stepS' type="number" class="form-control"
-                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min;"
-                                                min="0">
+                                                oninput="javascript: if(Number(this.value) < Number(this.min)) this.value = this.min; if(Number(this.value) > Number(this.max)) this.value = this.max;"
+                                                min="0" max="100" step="1">
                                         </div>
                                     </div>
                                 </div>
