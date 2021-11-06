@@ -415,11 +415,6 @@ def drawFractal(value, datums):
         x2 = float(datums['coord']['x2'])
         y1 = float(datums['coord']['y1'])
         y2 = float(datums['coord']['y2'])
-        # xrange = (x2-x1)/2
-        # yrange = (y2-y1)/2
-        # x1 = random.uniform(x1-xrange, x1+xrange)
-        # x2 = random.uniform(x2-xrange, x2+xrange)
-        # y1 = random.uniform(y1-yrange, y1+yrange)
         x1 = random.uniform(x1, x2)
         x2 = random.uniform(x1, x2)
         y1 = random.uniform(y1, y2)
@@ -472,11 +467,6 @@ def drawFractal(value, datums):
         x2 = float(datums['coord']['x2'])
         y1 = float(datums['coord']['y1'])
         y2 = float(datums['coord']['y2'])
-        # xrange = (x2-x1)/2
-        # yrange = (y2-y1)/2
-        # x1 = random.uniform(x1-xrange, x1+xrange)
-        # x2 = random.uniform(x2-xrange, x2+xrange)
-        # y1 = random.uniform(y1-yrange, y1+yrange)
         x1 = random.uniform(x1, x2)
         x2 = random.uniform(x1, x2)
         y1 = random.uniform(y1, y2)
