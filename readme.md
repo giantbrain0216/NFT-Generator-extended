@@ -66,3 +66,11 @@ Or double click './dist/app.exe' for Windows 10.
    *pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the [Python](https://www.python.org/) programming language.*
 
    ​	`pip install pandas`
+
+
+
+7.   Joblib
+
+   *Joblib is a set of tools to provide lightweight pipelining in Python.*
+
+   ​	`pip install joblib`
