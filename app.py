@@ -414,7 +414,7 @@ def drawFractal(value, datums):
         
         color_thief = ColorThief('./results/' + str(value) + '.png')
         dominant_color = color_thief.get_color(quality=1)
-        dominant_color_name = convert_rgb_to_names(dominant_color)
+        dominant_color_name = convert_rgb_to_names(dominant_color).capitalize()
 
         centerPointX = (x2 - x1) / 2
         pointName = ''
