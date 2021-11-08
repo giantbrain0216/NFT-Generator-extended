@@ -10,6 +10,12 @@ import pandas as pd
 from mandelbrot import Mandelbrot
 import joblib
 from joblib import Parallel, delayed
+from colorthief import ColorThief
+from scipy.spatial import KDTree
+from webcolors import (
+    CSS3_HEX_TO_NAMES,
+    hex_to_rgb,
+)
 
 number_of_cpu = joblib.cpu_count()
 
@@ -366,6 +372,28 @@ def drawFractal(value, datums):
     xmax = 1
     ymin = -1
     ymax = 1
+
+    pointNames = [
+        {'name': "Poseidon", 'value': (0.25, 0.471)},
+        {'name': "Hera", 'value': (0.04, 0.25)},
+        {'name': "Zeus", 'value': (-0.3, 0.04)},
+        {'name': "Demeter", 'value': (-0.453, -0.3)},
+        {'name': "Athena", 'value': (-0.637, -0.453)},
+        {'name': "Apollo", 'value': (-0.735, -0.637)},
+        {'name': "Aphrodite", 'value': (-0.8, -0.735)},
+        {'name': "Ares", 'value': (-0.97, -0.8)},
+        {'name': "Artemis", 'value': (-1.226, -0.97)},
+        {'name': "Hephaestus", 'value': (-1.29, -1.226)},
+        {'name': "Hermes", 'value': (-1.43, -1.29)},
+        {'name': "Hestia", 'value': (-2, -1.43)}
+    ]
+    locationNames = [
+        {'name': "Surface", 'value': (0, 200)},
+        {'name': "Shallow", 'value': (200, 2000)},
+        {'name': "Profound", 'value': (2000, 20000)},
+        {'name': "Deep", 'value': (20000, 200000)},
+    ]
+
     if(datums['mode'] == 'auto'):
         x1 = random.uniform(xmin, xmax)
         x2 = random.uniform(xmin, xmax)
@@ -378,16 +406,37 @@ def drawFractal(value, datums):
         stripe_s = random.randint(0, 10)
         ncycle = random.randint(1, 64)
         step_s = random.randint(0, 10)
-
+        xpixels = 1280 if datums['imgResolution'] == '' else int(
+            datums['imgResolution'])
         mand = Mandelbrot(maxiter=maxiter, coord=[x1, x2, y1, y2], rgb_thetas=[
-                          r, g, b], stripe_s=stripe_s, ncycle=ncycle, step_s=step_s)
+                          r, g, b], stripe_s=stripe_s, ncycle=ncycle, step_s=step_s, xpixels=xpixels)
         mand.draw('./results/' + str(value) + '.png')
+        
+        color_thief = ColorThief('./results/' + str(value) + '.png')
+        dominant_color = color_thief.get_color(quality=1)
+        dominant_color_name = convert_rgb_to_names(dominant_color)
+
+        centerPointX = (x2 - x1) / 2
+        pointName = ''
+        for point in pointNames:
+            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+                pointName = point['name']
+
+        locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
+        for location in locationNames:
+            if location['value'][0] < zoom and location['value'][1] > zoom:
+                locationName = location['name']
+
+        x = (x1 + x2) / 2
+        y = (y1 + y2) / 2
+
         token = {
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
-            "name": datums['projectName'] + '#' + str(value),
+            "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
@@ -404,6 +453,26 @@ def drawFractal(value, datums):
                 {
                     "trait_type": "Zoom",
                     "value": zoom,
+                },
+                {
+                    "trait_type": "Color",
+                    "value": dominant_color_name,
+                },
+                {
+                    "trait_type": "Point",
+                    "value": pointName,
+                },
+                {
+                    "trait_type": "Location",
+                    "value": locationName,
+                },
+                {
+                    "trait_type": "x",
+                    "value": x,
+                },
+                {
+                    "trait_type": "y",
+                    "value": y,
                 },
             ]
         }
@@ -419,6 +488,8 @@ def drawFractal(value, datums):
         x2 = random.uniform(x1, x2)
         y1 = random.uniform(y1, y2)
         y2 = (1 / 1) * (x2 - x1) + y1
+        xpixels = 1280 if datums['imgResolution'] == '' else int(
+            datums['imgResolution'])
         r = round(random.uniform(0, 1), 2) if datums['color']['r'] == '' else float(
             datums['color']['r'])
         g = round(random.uniform(0, 1), 2) if datums['color']['g'] == '' else float(
@@ -433,14 +504,34 @@ def drawFractal(value, datums):
             0, 10) if datums['stepS'] == '' else int(datums['stepS'])
 
         mand = Mandelbrot(maxiter=int(datums['maxiter']), coord=[x1, x2, y1, y2], rgb_thetas=[
-                          r, g, b], stripe_s=step_s, ncycle=ncycle, step_s=step_s)
+                          r, g, b], stripe_s=step_s, ncycle=ncycle, step_s=step_s, xpixels=xpixels)
         mand.draw('./results/' + str(value) + '.png')
+
+        color_thief = ColorThief('./results/' + str(value) + '.png')
+        dominant_color = color_thief.get_color(quality=1)
+        dominant_color_name = convert_rgb_to_names(dominant_color)
+
+        centerPointX = (x2 - x1) / 2
+        pointName = ''
+        for point in pointNames:
+            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+                pointName = point['name']
+
+        locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
+        for location in locationNames:
+            if location['value'][0] < zoom and location['value'][1] > zoom:
+                locationName = location['name']
+
+        x = (x1 + x2) / 2
+        y = (y1 + y2) / 2
+
         token = {
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
-            "name": datums['projectName'] + '#' + str(value),
+            "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
@@ -458,10 +549,31 @@ def drawFractal(value, datums):
                     "trait_type": "Zoom",
                     "value": zoom,
                 },
+                {
+                    "trait_type": "Color",
+                    "value": dominant_color_name,
+                },
+                {
+                    "trait_type": "Point",
+                    "value": pointName,
+                },
+                {
+                    "trait_type": "Location",
+                    "value": locationName,
+                },
+                {
+                    "trait_type": "x",
+                    "value": x,
+                },
+                {
+                    "trait_type": "y",
+                    "value": y,
+                },
             ]
         }
         with open('./metadata/' + str(value), 'w') as outfile:
             json.dump(token, outfile, indent=4)
+
     if(datums['mode'] == 'range'):
         x1 = float(datums['coord']['x1'])
         x2 = float(datums['coord']['x2'])
@@ -484,16 +596,38 @@ def drawFractal(value, datums):
             1, 64) if datums['ncycle'] == '' else int(datums['ncycle'])
         step_s = random.randint(
             0, 10) if datums['stepS'] == '' else int(datums['stepS'])
+        xpixels = 1280 if datums['imgResolution'] == '' else int(
+            datums['imgResolution'])
 
         mand = Mandelbrot(maxiter=int(datums['maxiter']), coord=[x1, x2, y1, y2], rgb_thetas=[
-                          r, g, b], stripe_s=step_s, ncycle=ncycle, step_s=step_s)
+                          r, g, b], stripe_s=step_s, ncycle=ncycle, step_s=step_s, xpixels=xpixels)
         mand.draw('./results/' + str(value) + '.png')
+
+        color_thief = ColorThief('./results/' + str(value) + '.png')
+        dominant_color = color_thief.get_color(quality=1)
+        dominant_color_name = convert_rgb_to_names(dominant_color)
+
+        centerPointX = (x2 - x1) / 2
+        pointName = ''
+        for point in pointNames:
+            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+                pointName = point['name']
+
+        locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
+        for location in locationNames:
+            if location['value'][0] < zoom and location['value'][1] > zoom:
+                locationName = location['name']
+
+        x = (x1 + x2) / 2
+        y = (y1 + y2) / 2
+
         token = {
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
-            "name": datums['projectName'] + '#' + str(value),
+            "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
@@ -511,6 +645,26 @@ def drawFractal(value, datums):
                     "trait_type": "Zoom",
                     "value": zoom,
                 },
+                {
+                    "trait_type": "Color",
+                    "value": dominant_color_name,
+                },
+                {
+                    "trait_type": "Point",
+                    "value": pointName,
+                },
+                {
+                    "trait_type": "Location",
+                    "value": locationName,
+                },
+                {
+                    "trait_type": "x",
+                    "value": x,
+                },
+                {
+                    "trait_type": "y",
+                    "value": y,
+                },
             ]
         }
         with open('./metadata/' + str(value), 'w') as outfile:
@@ -523,5 +677,19 @@ def getRange():
     mand.explore()
     return json.dumps(mand.range)
 
+
+def convert_rgb_to_names(rgb_tuple):
+    css3_db = CSS3_HEX_TO_NAMES
+    names = []
+    rgb_values = []
+
+    for color_hex, color_name in css3_db.items():
+        names.append(color_name)
+        rgb_values.append(hex_to_rgb(color_hex))
+
+    kdt_db = KDTree(rgb_values)
+
+    distance, index = kdt_db.query(rgb_tuple)
+    return names[index]
 
 eel.start('index.html', port=0)
