@@ -436,7 +436,7 @@ def drawFractal(value, datums):
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
             "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
-            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + str(x) + ", " + str(y) + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
@@ -531,7 +531,7 @@ def drawFractal(value, datums):
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
             "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
-            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + str(x) + ", " + str(y) + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
@@ -627,7 +627,7 @@ def drawFractal(value, datums):
             "image": datums['uploadURL'] + '/' + str(value) + '.png',
             "tokenId": str(value),
             "name": "#" + str(value) + " " + locationName + " " + dominant_color_name + " " + pointName,
-            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + x + ", " + y + "), on the "+ locationName +" of the Mandelbrot set",
+            "description": dominant_color_name + " " + pointName + " in a neighbourhood of the point (" + str(x) + ", " + str(y) + "), on the "+ locationName +" of the Mandelbrot set",
             "attributes": [
                 {
                     "trait_type": "Stripe",
