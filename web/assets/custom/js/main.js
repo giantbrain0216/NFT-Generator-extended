@@ -470,11 +470,10 @@ $(document).ready(() => {
                 repeatNum: $('#repeatNum3').val(),
                 maxiter: $('#maxiter').val(),
                 uploadURL: $('#uploadURL2').val(),
-                projectName: $('#projectName2').val(),
                 imgResolution: $('#imgResolution').val(),
             };
 
-            if (data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+            if (data.maxiter == '' || data.uploadURL == '') {
                 alert('Missing at coordinate or rest parameter');
             }
             else {
@@ -510,10 +509,9 @@ $(document).ready(() => {
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
                 uploadURL: $('#uploadURL2').val(),
-                projectName: $('#projectName2').val(),
                 imgResolution: $('#imgResolution').val(),
             };
-            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '') {
                 alert('Missing at coordinate or rest parameter');
             } else {
                 $('#generate3').prop('disabled', true);
@@ -548,10 +546,9 @@ $(document).ready(() => {
                 ncycle: $('#ncycle').val(),
                 stepS: $('#stepS').val(),
                 uploadURL: $('#uploadURL2').val(),
-                projectName: $('#projectName2').val(),
                 imgResolution: $('#imgResolution').val(),
             };
-            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '' || data.projectName == '') {
+            if (data.coord.x1 == '' || data.coord.x2 == '' || data.coord.y1 == '' || data.coord.y2 == '' || data.maxiter == '' || data.uploadURL == '') {
                 alert('Missing at coordinate or rest parameter');
             } else {
                 $('#generate3').prop('disabled', true);
