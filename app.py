@@ -416,7 +416,7 @@ def drawFractal(value, datums):
         dominant_color = color_thief.get_color(quality=1)
         dominant_color_name = convert_rgb_to_names(dominant_color).capitalize()
 
-        centerPointX = (x2 - x1) / 2
+        centerPointX = (x2 + x1) / 2
         pointName = ''
         for point in pointNames:
             if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
