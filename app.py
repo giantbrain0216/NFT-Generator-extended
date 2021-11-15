@@ -391,7 +391,7 @@ def drawFractal(value, datums):
         {'name': "Surface", 'value': (-1, 200)},
         {'name': "Shallow", 'value': (200, 2000)},
         {'name': "Profound", 'value': (2000, 20000)},
-        {'name': "Deep", 'value': (20000, 99999999)},
+        {'name': "Deep", 'value': (20000, float('inf'))},
     ]
 
     if(datums['mode'] == 'auto'):
