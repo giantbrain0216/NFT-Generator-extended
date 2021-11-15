@@ -374,7 +374,7 @@ def drawFractal(value, datums):
     ymax = 1
 
     pointNames = [
-        {'name': "Poseidon", 'value': (0.25, 0.471)},
+        {'name': "Poseidon", 'value': (0.25, 9)},
         {'name': "Hera", 'value': (0.04, 0.25)},
         {'name': "Zeus", 'value': (-0.3, 0.04)},
         {'name': "Demeter", 'value': (-0.453, -0.3)},
@@ -385,13 +385,13 @@ def drawFractal(value, datums):
         {'name': "Artemis", 'value': (-1.226, -0.97)},
         {'name': "Hephaestus", 'value': (-1.29, -1.226)},
         {'name': "Hermes", 'value': (-1.43, -1.29)},
-        {'name': "Hestia", 'value': (-2, -1.43)}
+        {'name': "Hestia", 'value': (-9, -1.43)}
     ]
     locationNames = [
-        {'name': "Surface", 'value': (0, 200)},
+        {'name': "Surface", 'value': (-1, 200)},
         {'name': "Shallow", 'value': (200, 2000)},
         {'name': "Profound", 'value': (2000, 20000)},
-        {'name': "Deep", 'value': (20000, 200000)},
+        {'name': "Deep", 'value': (20000, 99999999)},
     ]
 
     if(datums['mode'] == 'auto'):
@@ -419,14 +419,14 @@ def drawFractal(value, datums):
         centerPointX = (x2 + x1) / 2
         pointName = ''
         for point in pointNames:
-            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+            if point['value'][0] <= centerPointX and point['value'][1] >= centerPointX:
                 pointName = point['name']
 
         locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
         for location in locationNames:
-            if location['value'][0] < zoom and location['value'][1] > zoom:
+            if location['value'][0] <= zoom and location['value'][1] >= zoom:
                 locationName = location['name']
 
         x = (x1 + x2) / 2
@@ -509,19 +509,19 @@ def drawFractal(value, datums):
 
         color_thief = ColorThief('./results/' + str(value) + '.png')
         dominant_color = color_thief.get_color(quality=1)
-        dominant_color_name = convert_rgb_to_names(dominant_color)
+        dominant_color_name = convert_rgb_to_names(dominant_color).capitalize()
 
-        centerPointX = (x2 - x1) / 2
+        centerPointX = (x2 + x1) / 2
         pointName = ''
         for point in pointNames:
-            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+            if point['value'][0] <= centerPointX and point['value'][1] >= centerPointX:
                 pointName = point['name']
 
         locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
         for location in locationNames:
-            if location['value'][0] < zoom and location['value'][1] > zoom:
+            if location['value'][0] <= zoom and location['value'][1] >= zoom:
                 locationName = location['name']
 
         x = (x1 + x2) / 2
@@ -605,19 +605,19 @@ def drawFractal(value, datums):
 
         color_thief = ColorThief('./results/' + str(value) + '.png')
         dominant_color = color_thief.get_color(quality=1)
-        dominant_color_name = convert_rgb_to_names(dominant_color)
+        dominant_color_name = convert_rgb_to_names(dominant_color).capitalize()
 
-        centerPointX = (x2 - x1) / 2
+        centerPointX = (x2 + x1) / 2
         pointName = ''
         for point in pointNames:
-            if point['value'][0] < centerPointX and point['value'][1] > centerPointX:
+            if point['value'][0] <= centerPointX and point['value'][1] >= centerPointX:
                 pointName = point['name']
 
         locationName = ''
         zoom = int(round((xmax - xmin) * (ymax - ymin)) /
                    ((x2 - x1) * (y2 - y1)))
         for location in locationNames:
-            if location['value'][0] < zoom and location['value'][1] > zoom:
+            if location['value'][0] <= zoom and location['value'][1] >= zoom:
                 locationName = location['name']
 
         x = (x1 + x2) / 2
